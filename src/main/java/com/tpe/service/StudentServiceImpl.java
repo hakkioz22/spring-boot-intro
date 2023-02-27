@@ -6,6 +6,8 @@ import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,5 +77,10 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public boolean existsByEmail(String email) {
        return studentRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Page<Student> getStudentPage(Pageable pageable) {
+        return studentRepository.findAll(pageable);
     }
 }

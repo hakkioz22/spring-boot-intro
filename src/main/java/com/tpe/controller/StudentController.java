@@ -2,9 +2,13 @@ package com.tpe.controller;
 
 import com.tpe.domain.Student;
 import com.tpe.dto.StudentDTO;
-import com.tpe.exception.ConflictException;
 import com.tpe.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +93,15 @@ public class StudentController {
         return ResponseEntity.ok(map);
     }
 
+    @GetMapping("/pages")
+    public ResponseEntity<Page<Student>> getStudentPage(@RequestParam("page") int page,@RequestParam("size") int size,
+                                                        @RequestParam("sort") String prop,@RequestParam(value = "direction",required = false,defaultValue = "DESC") Direction direction){
+        Pageable pageable = PageRequest.of(page,size,Sort.by(direction,prop));
+        Page<Student> studentPage = studentService.getStudentPage(pageable);
+
+        return ResponseEntity.ok(studentPage);
+
+    }
 
 
 
