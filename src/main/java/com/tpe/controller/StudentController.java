@@ -1,6 +1,7 @@
 package com.tpe.controller;
 
 import com.tpe.domain.Student;
+import com.tpe.dto.StudentBookDTO;
 import com.tpe.dto.StudentDTO;
 import com.tpe.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,8 +101,50 @@ public class StudentController {
         Page<Student> studentPage = studentService.getStudentPage(pageable);
 
         return ResponseEntity.ok(studentPage);
-
     }
+
+    @GetMapping("/grade/{grade}")
+    public ResponseEntity<List<Student>> getStudentsEqualGrade(@PathVariable("grade") Integer grade){
+        List<Student> students = studentService.findAllEqualsGrade(grade);
+
+        return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/query/dto")
+    public ResponseEntity<StudentDTO> getStudentDTO(@RequestParam("id")Long id){
+        StudentDTO student = studentService.findStudentDTOById(id);
+        return ResponseEntity.ok(student);
+    }
+
+    @GetMapping("/query/list")
+    public ResponseEntity<List<Student>> getStudents(){
+        List<Student> allStudent = studentService.getStudents();
+        return ResponseEntity.ok(allStudent);
+    }
+
+    @GetMapping("/query/list/dto")
+    public ResponseEntity<List<StudentDTO>> getStudentsDTO(){
+        List<StudentDTO> allStudentDTO = studentService.getStudentsDTO();
+        return ResponseEntity.ok(allStudentDTO);
+    }
+
+    //http://localhost:8080/student/query/studentbook
+    @GetMapping("/query/studentbook")
+    public ResponseEntity<List<StudentBookDTO>> getStudentBookDTOs() {
+        List<StudentBookDTO> allStudentBookDTO = studentService.getStudentBookDTO();
+        return ResponseEntity.ok(allStudentBookDTO);
+    }
+
+
+    @GetMapping("/query/studentbook/pages")
+    public ResponseEntity<Page<StudentBookDTO>> getStudentBookDTOPage(@RequestParam("page") int page,@RequestParam("size") int size,
+                                                                      @RequestParam("sort") String prop,
+                                                                      @RequestParam(value = "direction",required = false,defaultValue = "DESC") Direction direction){
+        Pageable pageable = PageRequest.of(page,size,Sort.by(direction,prop));
+        Page<StudentBookDTO> studentBookDTOPage = studentService.getBookStudentDTOPage(pageable);
+        return ResponseEntity.ok(studentBookDTOPage);
+    }
+
 
 
 

@@ -1,0 +1,13 @@
+server:
+  port: 8082
+
+  logging:
+    file:
+      name: logs/studentapp-prod.log
+    pattern:
+      file: "%d %-5level [%thread] %logger:%msg%n"
+    level:
+      '[org.springframework.web]': WARN
+      '[org.hibernate]': INFO
+      '[com.tpe]': INFO
+

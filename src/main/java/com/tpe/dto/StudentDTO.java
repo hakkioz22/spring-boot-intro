@@ -1,5 +1,6 @@
 package com.tpe.dto;
 
+import com.tpe.domain.Student;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,5 +37,13 @@ public class StudentDTO {
     private String email;
 
 
+
+    public StudentDTO(Student student){
+        this.firstName = student.getFirstName();
+        this.lastName = student.getLastName();
+        this.phoneNumber = student.getPhoneNumber();
+        this.grade = student.getGrade();
+        this.email = student.getEmail();
+    }
 
 }

@@ -1,10 +1,12 @@
 package com.tpe.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -44,8 +46,11 @@ public class Student {
     @Email(message = "Provide valid email")
     private String email;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "MM/dd/yyyy HH:mm:ss")
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @OneToMany(mappedBy = "student")
+    private List<Book> books;
 
 }

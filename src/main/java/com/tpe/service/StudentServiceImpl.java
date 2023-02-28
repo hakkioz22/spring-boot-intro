@@ -1,9 +1,11 @@
 package com.tpe.service;
 
 import com.tpe.domain.Student;
+import com.tpe.dto.StudentBookDTO;
 import com.tpe.dto.StudentDTO;
 import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
+import com.tpe.mapper.StudentMapper;
 import com.tpe.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,12 +13,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class StudentServiceImpl implements StudentService{
 
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Override
     public List<Student> getAllStudent() {
@@ -82,5 +88,45 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public Page<Student> getStudentPage(Pageable pageable) {
         return studentRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Student> findAllEqualsGrade(Integer grade) {
+       //return studentRepository.findAllEqualsGrade(grade);
+        return studentRepository.findAllEqualsGradeWithSQL(grade);
+    }
+
+    @Override
+    public StudentDTO findStudentDTOById(Long id) {
+        return studentRepository.findStudentDTOById(id).orElseThrow(()->new ResourceNotFoundException("Student not found with id: " + id));
+    }
+
+    @Override
+    public List<Student> getStudents() {
+      return studentRepository.findAllStudent();
+    }
+
+    @Override
+    public List<StudentDTO> getStudentsDTO() {
+        List<Student> studentList = studentRepository.findAllStudent();
+        return studentMapper.mapToStudentDTO(studentList);
+    }
+
+    @Override
+    public List<StudentBookDTO> getStudentBookDTO() {
+        List<Student> studentList = studentRepository.findAll();
+        return studentMapper.mapToStudentBookDTOs(studentList);
+    }
+
+    @Override
+    public Page<StudentBookDTO> getBookStudentDTOPage(Pageable pageable) {
+        Page<Student> studentPage = studentRepository.findAll(pageable);
+        Page<StudentBookDTO> dtoPage = studentPage.map( new Function<Student, StudentBookDTO>() {
+            @Override
+            public StudentBookDTO apply(Student student) {
+                return studentMapper.studentToStudentBookDTO(student);
+            }
+        });
+        return dtoPage;
     }
 }
