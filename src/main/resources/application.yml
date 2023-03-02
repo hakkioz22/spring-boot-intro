@@ -27,8 +27,8 @@ spring:
 
   security:
     user:
-      name: john
-      password: coffee
+      name: admin
+      password: admin
 
 logging:
   file:
