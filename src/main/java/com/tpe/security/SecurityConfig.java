@@ -1,10 +1,13 @@
 package com.tpe.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -14,6 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 //WebSecurityConfigurerAdapter deprecated!!!
 public class SecurityConfig {
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -21,7 +27,7 @@ public class SecurityConfig {
         http.csrf().disable();
 
         http.authorizeRequests().
-        antMatchers("/","index.html","/css/*","/js/*","/images/*").permitAll().
+        antMatchers("/","index.html","/css/*","/js/*","/images/*","/register").permitAll().
         and().authorizeRequests().antMatchers("/student/**").hasRole("INSTRUCTOR").
         and().authorizeRequests().antMatchers("/beans").hasRole("ADMIN").
                 //If you use hasAuthority, you must add ROLE_ prefix on the method body --> hasAuthority(ROLE_ADMIN)
@@ -29,15 +35,23 @@ public class SecurityConfig {
         return http.build();
     }
 
+    //@Bean
+//    protected InMemoryUserDetailsManager configureAuthentication(){
+//
+////        UserDetails user1 = User.builder().username("user").password("{noop}password").roles("INSTRUCTOR").build();
+////        return new InMemoryUserDetailsManager(new UserDetails[] {user1});
+//
+//        UserDetails userJohn = User.builder().username("user").password(passwordEncoder().encode("password")).roles("INSTRUCTOR").build();
+//        UserDetails userTony = User.builder().username("tony").password(passwordEncoder().encode("passTony")).roles("ADMIN").build();
+//        return new InMemoryUserDetailsManager(new UserDetails[] {userJohn,userTony});
+//    }
+
     @Bean
-    protected InMemoryUserDetailsManager configureAuthentication(){
-
-//        UserDetails user1 = User.builder().username("user").password("{noop}password").roles("INSTRUCTOR").build();
-//        return new InMemoryUserDetailsManager(new UserDetails[] {user1});
-
-        UserDetails userJohn = User.builder().username("user").password(passwordEncoder().encode("password")).roles("INSTRUCTOR").build();
-        UserDetails userTony = User.builder().username("tony").password(passwordEncoder().encode("passTony")).roles("ADMIN").build();
-        return new InMemoryUserDetailsManager(new UserDetails[] {userJohn,userTony});
+    public DaoAuthenticationProvider authProvider(){
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
 
     @Bean
