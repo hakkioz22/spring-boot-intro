@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ public class StudentController {
         return "Welcome to Student Controller" + request.getServletPath();
     }
 
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PostMapping
     public ResponseEntity<Map<String,String>> createStudent(@Valid @RequestBody StudentDTO studentDTO){
         studentService.saveStudent(studentDTO);

@@ -3,6 +3,7 @@ package com.tpe.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ public class BeanController {
 
     @RequestMapping("/beans")
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Map<String,String> getBeans(){
         String[] beanNames = applicationContext.getBeanDefinitionNames();
         Map<String,String> map = new HashMap<>();

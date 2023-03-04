@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 //WebSecurityConfigurerAdapter deprecated!!!
 public class SecurityConfig {
 
@@ -28,8 +30,8 @@ public class SecurityConfig {
 
         http.authorizeRequests().
         antMatchers("/","index.html","/css/*","/js/*","/images/*","/register").permitAll().
-        and().authorizeRequests().antMatchers("/student/**").hasRole("INSTRUCTOR").
-        and().authorizeRequests().antMatchers("/beans").hasRole("ADMIN").
+//        and().authorizeRequests().antMatchers("/student/**").hasRole("INSTRUCTOR").
+//        and().authorizeRequests().antMatchers("/beans").hasRole("ADMIN").
                 //If you use hasAuthority, you must add ROLE_ prefix on the method body --> hasAuthority(ROLE_ADMIN)
         anyRequest().authenticated().and().httpBasic();
         return http.build();
